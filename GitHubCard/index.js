@@ -3,9 +3,6 @@
     (replacing the placeholder with your Github name):
     https://api.github.com/users/<your name>
 */
-
-import axios from 'axios'
-
 axios.get('https://api.github.com/users/ChadWCox')
   .then(res => {
 
@@ -32,6 +29,21 @@ axios.get('https://api.github.com/users/ChadWCox')
     and append the returned markup to the DOM as a child of .cards
 */
 
+axios.get('https://api.github.com/users/ChadWCox')
+  .then(res => {
+    const object = res.data
+    const domEntry = document.querySelector('.cards');
+    const personCard = personCardMaker(object)
+
+    domEntry.appendChild(personCard)
+
+    })
+
+    .catch(err => {
+      console.log(err)
+      
+    })
+
 /*
   STEP 5: Now that you have your own card getting added to the DOM, either
     follow this link in your browser https://api.github.com/users/<Your github name>/followers,
@@ -45,10 +57,29 @@ axios.get('https://api.github.com/users/ChadWCox')
 
 
 
-const followersArray = [];
+
+
+const followersArray = ["https://api.github.com/users/tetondan", "https://api.github.com/users/dustinmyers", "https://api.github.com/users/justsml", "https://api.github.com/users/luishrd", "https://api.github.com/users/bigknell"];
+
+
+followersArray.forEach(values => {
+  axios.get(values)
+    .then(res => {
+      const people = res.data
+      const peopleCard = personCardMaker(people) 
+      const domEntry = document.querySelector('.cards');
+      domEntry.appendChild(peopleCard)  
+    })
+    .catch(err => {
+  console.log(err)
+})
+})
+
+
+
 
 /*
-  STEP 3: Create a function that accepts a single object as its only argument.
+  STEP 3: Create a function that accepts a single objURL as its only argument.
     Using DOM methods and properties, create and return the following markup:
 
     <div class="card">
@@ -66,6 +97,61 @@ const followersArray = [];
       </div>
     </div>
 */
+function personCardMaker(objURL) {
+
+  const personCard = document.createElement('div')
+    personCard.classList.add('card')
+
+  const image = document.createElement('img')
+    image.src = objURL.avatar_url
+
+  const cardDiv = document.createElement('div')
+    cardDiv.classList.add('card-info')  
+
+  const title = document.createElement('h3')
+    title.classList.add('name')
+    title.textContent = objURL.name
+
+  const username = document.createElement('p')
+    username.classList.add('username')
+    username.textContent = objURL.login
+
+  const location = document.createElement('p')
+    location.textContent = `Location: ${objURL.location}`
+
+  const profile = document.createElement('p')
+    profile.textContent = `Profile: `
+
+  const url = document.createElement('a')
+    url.href = objURL.html_url
+    url.textContent = objURL.html_url
+
+  const followers = document.createElement('p')
+    followers.textContent = `Followers: ${objURL.followers}`
+
+  const following = document.createElement('p')
+    following.textContent = `Following: ${objURL.following}` 
+
+  const bio = document.createElement('p')
+    bio.textContent = objURL.bio
+
+  personCard.appendChild(image)
+  personCard.appendChild(cardDiv)
+  cardDiv.appendChild(title)
+  cardDiv.appendChild(username)
+  cardDiv.appendChild(location)
+  cardDiv.appendChild(profile)
+  profile.append(url)
+  cardDiv.appendChild(followers)
+  cardDiv.appendChild(following)
+  cardDiv.appendChild(bio)
+
+
+
+  return personCard
+}
+
+
 
 /*
   List of LS Instructors Github username's:
